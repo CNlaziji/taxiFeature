@@ -1,0 +1,62 @@
+# config.yaml
+
+# ----------------- 目录配置 -----------------
+# 原始数据文件所在的目录
+RAW_DATA_DIR: raw_data/
+# 清洗后数据输出的根目录
+CLEANED_DATA_DIR: cleaned_data/
+# 清洗后用于视图的CSV文件子目录
+VIEW_DATA_SUBDIR: view/
+# 清洗后OD对数据（已删除冗余）的CSV文件子目录
+OD_DATA_SUBDIR: od_drop/
+# 合并所有日期OD数据的输出文件名
+ALL_WEEK_OD_FILENAME: all_week_od_data.csv
+
+
+# ----------------- 数据列名映射配置 -----------------
+# 将原始数据中的列名映射到代码中使用的通用列名。
+# 例如： car_id: COMMADDR 表示原始数据中的 'COMMADDR' 列将被视为 'car_id'。
+# 如果原始数据中的列名与通用列名相同，则无需在此处映射。
+COLUMN_MAPPING:
+  COMMADDR: car_id
+  UTC: timestamp
+  LON: longitude
+  LAT: latitude
+  TFLAG: status
+
+# 原始数据中必需的列名 (用于初始加载时检查是否存在)
+# 这些列名应该与 COLUMN_MAPPING 中映射的原始列名一致。
+REQUIRED_RAW_COLS_FOR_CHECK:
+  - COMMADDR
+  - UTC
+  - LON
+  - LAT
+  - TFLAG
+
+# ----------------- OD识别参数配置 -----------------
+OD_CONFIG:
+  min_trip_duration_sec: 30
+  min_trip_distance_meter: 100
+  tolerance_s: 3600
+  tolerance_m: 500
+  id_column: "car_id"
+  # 注意：这里将使用经过转换的GCJ02坐标
+  time_column: "timestamp"
+  longitude_column: "lon_gcj" # 指向转换后的GCJ02经度
+  latitude_column: "lat_gcj"  # 指向转换后的GCJ02纬度
+  status_column: "status"
+
+# ----------------- 数据过滤参数 -----------------
+DATA_FILTER:
+  MAX_SPEED_KMH: 120               # 最大允许速度(km/h)
+  GEO_FENCE:                       # 地理围栏配置 (GCJ02坐标系下)
+    CITY: "Jinan"                  # 城市名称更新为济南
+    MIN_LON: 116.6                 # 济南市最小经度 (东经)
+    MAX_LON: 117.3                 # 济南市最大经度 (东经)
+    MIN_LAT: 36.6                  # 济南市最小纬度 (北纬)
+    MAX_LAT: 37.2                  # 济南市最大纬度 (北纬)
+
+# ----------------- 日志配置 -----------------
+LOG_LEVEL: INFO # DEBUG, INFO, WARNING, ERROR, CRITICAL
+LOG_FILE: pipeline.log
+LOG_FORMAT: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
