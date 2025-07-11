@@ -1,3 +1,4 @@
+
 # config.yaml
 
 # ----------------- 目录配置 -----------------
@@ -34,17 +35,19 @@ REQUIRED_RAW_COLS_FOR_CHECK:
   - TFLAG
 
 # ----------------- OD识别参数配置 -----------------
+# config.yaml
 OD_CONFIG:
   min_trip_duration_sec: 30
   min_trip_distance_meter: 100
   tolerance_s: 3600
   tolerance_m: 500
   id_column: "car_id"
-  # 注意：这里将使用经过转换的GCJ02坐标
   time_column: "timestamp"
-  longitude_column: "lon_gcj" # 指向转换后的GCJ02经度
-  latitude_column: "lat_gcj"  # 指向转换后的GCJ02纬度
+  longitude_column: "lon_gcj"
+  latitude_column: "lat_gcj"
   status_column: "status"
+  LOADED_STATUS: 268435456  # 新增
+  EMPTY_STATUS: 0           # 新增
 
 # ----------------- 数据过滤参数 -----------------
 DATA_FILTER:
@@ -60,3 +63,14 @@ DATA_FILTER:
 LOG_LEVEL: INFO # DEBUG, INFO, WARNING, ERROR, CRITICAL
 LOG_FILE: pipeline.log
 LOG_FORMAT: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+# ----------------- OD 聚类参数配置 -----------------
+OD_CLUSTERING:
+  DBSCAN_EPS_DEG: 0.001       # DBSCAN的epsilon参数 (经纬度单位，约100米半径)
+  DBSCAN_MIN_SAMPLES: 5       # DBSCAN的min_samples参数 (形成一个簇所需的最小样本数)
+  HOTSPOT_OUTPUT_DIR: cleaned_data/hotspots/ # 聚类热力图输出目录
+  TIME_BIN_INTERVAL_HOURS: 1  # 时间分箱间隔 (小时)
+  
+  # 用于批量处理OD文件的文件名前缀模式 (例如 'jn'，可选，如果文件夹内只有OD文件可留空)
+  # 脚本将遍历 OD_DATA_SUBDIR 下所有符合 '_od_wh_drop.parquet' 模式的文件
+  OD_FILE_PREFIX_PATTERN: jn

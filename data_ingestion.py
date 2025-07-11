@@ -56,10 +56,16 @@ def load_raw_data(file_name: str) -> Optional[pd.DataFrame]:
         return None
 
 
-def get_raw_files_list() -> List[str]:
-    config = get_config()
-    raw_dir = config["RAW_DATA_DIR"]
-    if not os.path.isdir(raw_dir):
-        logger.error(f"原始数据目录不存在: {raw_dir}")
+def get_raw_files_list(raw_data_dir: str) -> List[str]:
+    """获取指定目录下所有的原始CSV文件列表。"""
+    if not os.path.isdir(raw_data_dir):
+        logger.error(f"原始数据目录不存在: {raw_data_dir}")
         return []
-    return [f for f in os.listdir(raw_dir) if f.lower().endswith(".csv")]
+    
+    try:
+        files = [f for f in os.listdir(raw_data_dir) if f.lower().endswith('.csv')]
+        logger.info(f"在 {raw_data_dir} 中找到 {len(files)} 个CSV文件。")
+        return files
+    except Exception as e:
+        logger.error(f"遍历目录 {raw_data_dir} 时出错: {e}")
+        return []

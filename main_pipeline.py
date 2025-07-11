@@ -65,7 +65,7 @@ def run_data_cleaning_pipeline():
     all_cleaned_od_dfs = []
 
     # 1. 获取所有原始数据文件列表
-    raw_files = get_raw_files_list()
+    raw_files = get_raw_files_list(RAW_DATA_DIR)
     if not raw_files:
         logger.error(f"在目录 {RAW_DATA_DIR} 中未找到任何原始数据文件。请检查配置或数据是否存在。")
         return
